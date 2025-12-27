@@ -1,0 +1,32 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: db-service
+    environment:
+      MYSQL_DATABASE: event_db
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: dev_user
+      MYSQL_PASSWORD: dev_password
+    ports:
+        - "3306:3306"
+    volumes:
+        - mysql_data:/var/lib/mysql
+        
+
+  nest:
+      build:
+        context: ./backend-nest
+        dockerfile: ../Docker/Dockerfile
+      container_name: nest-api
+      ports:
+        - "3000:3000"
+      volumes:
+        - ./backend-nest:/usr/src/app
+        - /usr/src/app/node_modules
+      depends_on:
+        - db
+
+
+volumes:
+  mysql_data:
+    
