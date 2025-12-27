@@ -3,8 +3,8 @@ services:
     image: mysql:8.0
     container_name: db-service
     environment:
-      MYSQL_DATABASE: event_db
-      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: imobiscan
+      MYSQL_ROOT_PASSWORD: imobiscan_secure_password
       MYSQL_USER: dev_user
       MYSQL_PASSWORD: dev_password
     ports:
