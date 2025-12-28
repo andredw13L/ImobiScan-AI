@@ -22,11 +22,12 @@ services:
         - "3000:3000"
       volumes:
         - ./backend-nest:/usr/src/app
-        - /usr/src/app/node_modules
+        - nest_node_modules:/usr/src/app/node_modules
       depends_on:
         - db
 
 
 volumes:
   mysql_data:
+  nest_node_modules:
     
