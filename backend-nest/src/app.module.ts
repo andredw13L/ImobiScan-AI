@@ -3,6 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DocumentosEntity } from './documentos/entities/documento.entity';
+import { AnaliseEntity } from './documentos/entities/analise.entity';
+import { DocumentosModule } from './documentos/documentos.module';
 
 @Module({
   imports: [
@@ -11,7 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
 
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule, DocumentosModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
@@ -21,6 +24,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         password: configService.get<string>('DB_PASS'),
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
+        entities: [DocumentosEntity, AnaliseEntity],
         // synchronize shouldn't be used in production
         synchronize: true,
       }),
