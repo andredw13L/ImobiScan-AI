@@ -5,7 +5,6 @@ import {
   UseInterceptors,
   ParseFilePipe,
   MaxFileSizeValidator,
-  FileTypeValidator,
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -14,10 +13,9 @@ import { diskStorage } from 'multer';
 
 @Controller('documentos')
 export class DocumentosController {
-  // TODO: Adicionar mais tipos de arquivos se necessário
   private allowedMimeTypes = ['image/png', 'image/jpeg', 'application/pdf'];
 
-  constructor(private readonly service: DocumentosService) {}
+  constructor(private readonly documentosService: DocumentosService) {}
 
   @Post('upload')
   @UseInterceptors(
@@ -31,7 +29,7 @@ export class DocumentosController {
       }),
     }),
   )
-  realizarUpload(
+  async realizarUpload(
     @UploadedFile(
       new ParseFilePipe({
         validators: [new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 })],
@@ -45,11 +43,6 @@ export class DocumentosController {
       );
     }
 
-    return {
-      status: 'sucesso',
-      arquivo: file.filename,
-      tamanho: file.size,
-      mimetype: file.mimetype,
-    };
+    return await this.documentosService.salvarDocumento(file);
   }
 }

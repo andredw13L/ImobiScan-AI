@@ -30,4 +30,15 @@ export class DocumentosService {
       order: { createdAt: 'DESC' },
     });
   }
+
+  async salvarDocumento(file: Express.Multer.File) {
+    const novoDocumento = this.docRepository.create({
+      nomeOriginal: file.originalname,
+      nomeArquivo: file.filename,
+      tipo: file.mimetype,
+      isActive: true,
+    });
+
+    return await this.docRepository.save(novoDocumento);
+  }
 }

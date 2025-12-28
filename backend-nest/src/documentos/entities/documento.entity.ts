@@ -31,6 +31,8 @@ export class DocumentosEntity {
   @Column({ default: true })
   isActive: boolean;
 
-  @OneToOne(() => AnaliseEntity, (analise) => analise.documento)
+  @OneToOne(() => AnaliseEntity, (analise) => analise.documento, {
+    cascade: true,
+  })
   analise: AnaliseEntity;
 }
