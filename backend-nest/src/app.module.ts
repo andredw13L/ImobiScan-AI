@@ -22,6 +22,8 @@ import { DocumentosModule } from './documentos/documentos.module';
         password: configService.get<string>('DB_PASS'),
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
+        
+        retryDelay: 30000,
         // synchronize shouldn't be used in production
         synchronize: true,
       }),
