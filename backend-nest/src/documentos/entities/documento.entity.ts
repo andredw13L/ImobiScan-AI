@@ -22,6 +22,9 @@ export class DocumentosEntity {
   @Column()
   tipo: string;
 
+  @Column({ type: 'int', nullable: true })
+  tamanho: number;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

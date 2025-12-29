@@ -31,14 +31,14 @@ export class DocumentosService {
     });
   }
 
-  async salvarDocumento(file: Express.Multer.File) {
-    const novoDocumento = this.docRepository.create({
+  async salvarDocumento(file: Express.Multer.File): Promise<DocumentosEntity> {
+    const novoDoc = this.docRepository.create({
       nomeOriginal: file.originalname,
       nomeArquivo: file.filename,
       tipo: file.mimetype,
-      isActive: true,
+      tamanho: file.size,
     });
 
-    return await this.docRepository.save(novoDocumento);
+    return await this.docRepository.save(novoDoc);
   }
 }
