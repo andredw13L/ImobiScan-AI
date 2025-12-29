@@ -8,9 +8,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface Response<T> {
-  sucesso: boolean;
-  dados: T;
-  timestamp: string;
+  arquivo: T;
 }
 
 @Injectable()
@@ -23,10 +21,8 @@ export class TransformInterceptor<T> implements NestInterceptor<
     next: CallHandler,
   ): Observable<Response<T>> {
     return next.handle().pipe(
-      map((dados: T) => ({
-        sucesso: true,
-        dados,
-        timestamp: new Date().toISOString(),
+      map((arquivo: T) => ({
+        arquivo,
       })),
     );
   }
