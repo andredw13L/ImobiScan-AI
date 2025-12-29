@@ -37,13 +37,13 @@ async function bootstrap() {
 
   app.setViewEngine('hbs');
 
+  app.enableCors();
+
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+
   const url = await app.getUrl();
 
   console.log(`\n Servidor pronto em: ${url}`);
   console.log(` Documentação Swagger: ${url}/api\n`);
-
-  app.enableCors();
-
-  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
 bootstrap();
