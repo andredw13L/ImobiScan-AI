@@ -15,7 +15,6 @@ export class FileValidationPipe implements PipeTransform {
       throw new BadRequestException({
         statusCode: 400,
         message: 'O arquivo é obrigatório.',
-        error: 'BAD_REQUEST',
       });
     }
 
@@ -28,7 +27,6 @@ export class FileValidationPipe implements PipeTransform {
       throw new BadRequestException({
         statusCode: 400,
         message: `Extensão inválida. Aceitas: ${this.ALLOWED_EXTENSIONS.join(', ')}`,
-        error: 'INVALID_FILE_EXTENSION',
       });
     }
 
@@ -36,7 +34,6 @@ export class FileValidationPipe implements PipeTransform {
       throw new BadRequestException({
         statusCode: 400,
         message: `Tipo de arquivo não permitido. Aceitos: ${this.ALLOWED_TYPES.join(', ')}`,
-        error: 'INVALID_MIME_TYPE',
       });
     }
 
@@ -44,7 +41,6 @@ export class FileValidationPipe implements PipeTransform {
       throw new BadRequestException({
         statusCode: 400,
         message: `O arquivo excede o limite de 5MB. Tamanho atual: ${this.formatBytes(file.size)}`,
-        error: 'FILE_TOO_LARGE',
       });
     }
 
@@ -52,7 +48,6 @@ export class FileValidationPipe implements PipeTransform {
       throw new BadRequestException({
         statusCode: 400,
         message: 'O arquivo está vazio.',
-        error: 'EMPTY_FILE',
       });
     }
 
