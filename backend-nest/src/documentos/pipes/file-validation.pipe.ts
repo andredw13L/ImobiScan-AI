@@ -5,10 +5,28 @@ export class FileValidationPipe implements PipeTransform {
   private readonly ALLOWED_TYPES = [
     'image/png',
     'image/jpeg',
+    'image/webp',
+    'image/tiff',
+    'image/bmp',
     'application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'text/plain',
   ];
-  private readonly MAX_SIZE = 5 * 1024 * 1024;
-  private readonly ALLOWED_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.pdf'];
+
+  private readonly MAX_SIZE = 10 * 1024 * 1024;
+
+  private readonly ALLOWED_EXTENSIONS = [
+    '.png',
+    '.jpg',
+    '.jpeg',
+    '.pdf',
+    '.webp',
+    '.docx',
+    '.txt',
+    '.tiff',
+    '.tif',
+    '.bmp',
+  ];
 
   transform(file: Express.Multer.File) {
     if (!file) {
@@ -33,7 +51,7 @@ export class FileValidationPipe implements PipeTransform {
     if (!this.ALLOWED_TYPES.includes(file.mimetype)) {
       throw new BadRequestException({
         statusCode: 400,
-        message: `Tipo de arquivo não permitido. Aceitos: ${this.ALLOWED_TYPES.join(', ')}`,
+        message: `Tipo de arquivo não permitido: ${file.mimetype}. Aceitos: ${this.ALLOWED_TYPES.join(', ')}`,
       });
     }
 
