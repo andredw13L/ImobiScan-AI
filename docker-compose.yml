@@ -25,6 +25,18 @@ services:
         - nest_node_modules:/usr/src/app/node_modules
       depends_on:
         - db
+        - ocr-service
+
+
+  ocr-service:
+    build:
+      context: ./backend-python
+      dockerfile: docker/Dockerfile
+    container_name: ocr-python
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend-python:/app
 
 
 volumes:
