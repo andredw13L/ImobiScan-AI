@@ -16,7 +16,7 @@ services:
   nest:
       build:
         context: ./backend-nest
-        dockerfile: ../Docker/Dockerfile
+        dockerfile: ./docker/Dockerfile
       container_name: nest-api
       ports:
         - "3000:3000"
