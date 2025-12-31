@@ -4,14 +4,23 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  BeforeInsert,
   OneToOne,
 } from 'typeorm';
 import { AnaliseEntity } from './analise.entity';
+import { v7 as uuidv7 } from 'uuid';
 
 @Entity('documentos')
 export class DocumentosEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
+
+  @BeforeInsert()
+  generateId() {
+    if (!this.id) {
+      this.id = uuidv7();
+    }
+  }
 
   @Column()
   nomeOriginal: string;

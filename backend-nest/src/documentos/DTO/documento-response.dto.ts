@@ -3,7 +3,7 @@ import { DocumentosEntity } from '../entities/documento.entity';
 
 export class DocumentoResponseDto {
   @ApiProperty({ description: 'ID único do documento no banco', example: 1 })
-  id: number;
+  id: string;
 
   @ApiProperty({
     description: 'Nome original do arquivo enviado',
