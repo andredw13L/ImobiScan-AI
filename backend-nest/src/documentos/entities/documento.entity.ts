@@ -1,7 +1,7 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
   BeforeInsert,
@@ -12,7 +12,7 @@ import { v7 as uuidv7 } from 'uuid';
 
 @Entity('documentos')
 export class DocumentosEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: string;
 
   @BeforeInsert()

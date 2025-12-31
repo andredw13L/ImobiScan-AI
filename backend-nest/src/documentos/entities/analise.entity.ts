@@ -1,37 +1,44 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
   JoinColumn,
+  BeforeInsert,
 } from 'typeorm';
 import { DocumentosEntity } from './documento.entity';
+import { v7 as uuidv7 } from 'uuid';
 
 @Entity('analises')
 export class AnaliseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn()
+  id: string;
+
+  @BeforeInsert()
+  generateId() {
+    if (!this.id) {
+      this.id = uuidv7();
+    }
+  }
 
   @Column({ type: 'longtext', nullable: true })
   textoExtraido: string;
 
-  @Column({ type: 'text', nullable: true })
-  insightsIA: string;
+  @Column({ type: 'json', nullable: true })
+  metadados: any;
 
-  @Column({ default: 'pendente' })
-  status: string;
+  @Column({ nullable: true })
+  statusProcessamento: string;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToOne(() => DocumentosEntity, (documento) => documento.analise, {
-    onDelete: 'CASCADE',
-  })
+  @OneToOne(() => DocumentosEntity, (doc) => doc.analise)
   @JoinColumn({ name: 'documento_id' })
   documento: DocumentosEntity;
 }
