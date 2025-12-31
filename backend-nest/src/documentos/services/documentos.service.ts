@@ -40,7 +40,10 @@ export class DocumentosService {
         this.httpService.post<OcrResponse>(
           'http://ocr-service:8000/extract-text',
           formData,
-          { headers: { ...formData.getHeaders() } },
+          {
+            headers: { ...formData.getHeaders() },
+            timeout: 60000,
+          },
         ),
       );
       return response.data;
