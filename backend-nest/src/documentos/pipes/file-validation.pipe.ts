@@ -44,7 +44,7 @@ export class FileValidationPipe implements PipeTransform {
     if (!hasValidExtension) {
       throw new BadRequestException({
         statusCode: 400,
-        message: `Extensão inválida. Aceitas: ${this.ALLOWED_EXTENSIONS.join(', ')}`,
+        message: `Extensão inválida. Extensões Aceitas: ${this.ALLOWED_EXTENSIONS.join(', ')}`,
       });
     }
 
