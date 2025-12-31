@@ -41,7 +41,7 @@ export class DocumentosController {
     file: Express.Multer.File,
   ): Promise<DocumentoResponseDto> {
     try {
-      const docEntity = await this.documentosService.salvarDocumento(file);
+      const docEntity = await this.documentosService.criarComAnalise(file);
       return DocumentoResponseDto.fromEntity(docEntity);
     } catch (error) {
       if (error instanceof HttpException) {

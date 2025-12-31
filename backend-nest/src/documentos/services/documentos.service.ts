@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import FormData from 'form-data';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
+import fs from 'fs';
 
 import { DocumentosEntity } from '../entities/documento.entity';
 
@@ -29,7 +30,7 @@ export class DocumentosService {
   async enviarParaAnalise(file: Express.Multer.File): Promise<OcrResponse> {
     const formData = new FormData();
 
-    formData.append('file', file.buffer, {
+    formData.append('file', fs.createReadStream(file.path), {
       filename: file.originalname,
       contentType: file.mimetype,
     });
@@ -37,13 +38,9 @@ export class DocumentosService {
     try {
       const response = await lastValueFrom(
         this.httpService.post<OcrResponse>(
-          'http://localhost:8000/extract-text',
+          'http://ocr-service:8000/extract-text',
           formData,
-          {
-            headers: {
-              ...formData.getHeaders(),
-            },
-          },
+          { headers: { ...formData.getHeaders() } },
         ),
       );
       return response.data;
@@ -58,6 +55,8 @@ export class DocumentosService {
   }
 
   async criarComAnalise(file: Express.Multer.File): Promise<DocumentosEntity> {
+    const resultadoOcr = await this.enviarParaAnalise(file);
+
     const novoDocumento = this.docRepository.create({
       nomeOriginal: file.originalname,
       nomeArquivo: file.filename,
@@ -65,9 +64,9 @@ export class DocumentosService {
       tamanho: file.size,
       isActive: true,
       analise: {
-        statusProcessamento: 'pendente',
-        textoExtraido: '',
-        metadados: {},
+        statusProcessamento: 'concluido',
+        textoExtraido: resultadoOcr.texto,
+        metadados: resultadoOcr.metadados,
       },
     });
 
@@ -79,16 +78,5 @@ export class DocumentosService {
       relations: ['analise'],
       order: { createdAt: 'DESC' },
     });
-  }
-
-  async salvarDocumento(file: Express.Multer.File): Promise<DocumentosEntity> {
-    const novoDoc = this.docRepository.create({
-      nomeOriginal: file.originalname,
-      nomeArquivo: file.filename,
-      tipo: file.mimetype,
-      tamanho: file.size,
-    });
-
-    return await this.docRepository.save(novoDoc);
   }
 }
