@@ -4,11 +4,19 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DocumentosModule } from './documentos/documentos.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+
+    BullModule.forRoot({
+      connection: {
+        host: 'queue-manager',
+        port: 6379,
+      },
     }),
 
     TypeOrmModule.forRootAsync({
