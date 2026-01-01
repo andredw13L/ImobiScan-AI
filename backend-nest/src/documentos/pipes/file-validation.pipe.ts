@@ -44,7 +44,7 @@ export class FileValidationPipe implements PipeTransform {
     if (!hasValidExtension) {
       throw new BadRequestException({
         statusCode: 400,
-        message: `Extensão inválida. Extensões Aceitas: ${this.ALLOWED_EXTENSIONS.join(', ')}`,
+        message: `Extensão inválida. Extensões aceitas: ${this.ALLOWED_EXTENSIONS.join(', ')}`,
       });
     }
 
@@ -58,7 +58,7 @@ export class FileValidationPipe implements PipeTransform {
     if (file.size > this.MAX_SIZE) {
       throw new BadRequestException({
         statusCode: 400,
-        message: `O arquivo excede o limite de 5MB. Tamanho atual: ${this.formatBytes(file.size)}`,
+        message: `O arquivo excede o limite de 10MB. Tamanho atual: ${this.formatBytes(file.size)}`,
       });
     }
 
