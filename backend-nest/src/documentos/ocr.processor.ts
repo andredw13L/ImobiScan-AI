@@ -83,15 +83,17 @@ export class OcrProcessor extends WorkerHost {
   }
 
   @OnQueueEvent('waiting')
-  onWaiting(job: Job<OcrJobData>) {
+  onWaiting(jobId: string) {
     this.logger.log(
-      `[FILA] Novo job adicionado e aguardando: ID ${job.data.documentId}`,
+      `[FILA] O job ${jobId} entrou na fila e está aguardando processamento.`,
     );
   }
 
   @OnWorkerEvent('active')
   onActive(job: Job<OcrJobData>) {
-    this.logger.log(`[FILA] Iniciando OCR: Doc ${job.data.documentId}`);
+    this.logger.log(
+      `[FILA] Iniciando OCR: Doc ${job.data.documentId} (Job ID: ${job.id})`,
+    );
   }
 
   @OnWorkerEvent('progress')
@@ -107,7 +109,9 @@ export class OcrProcessor extends WorkerHost {
 
   @OnWorkerEvent('drained')
   onDrained() {
-    this.logger.log('[FILA] Todos os trabalhos de OCR foram processados.');
+    this.logger.log(
+      '[FILA] Fila vazia: Todos os jobs pendentes foram finalizados.',
+    );
   }
 
   @OnWorkerEvent('error')
