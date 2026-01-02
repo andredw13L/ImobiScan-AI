@@ -26,7 +26,7 @@ services:
       depends_on:
         - db
         - ocr-service
-        - queue-manager
+        - redis
 
 
   ocr-service:
@@ -45,9 +45,13 @@ services:
     container_name: queue-manager
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
 
 
 volumes:
   mysql_data:
   nest_node_modules:
-    
+  redis_data:
+
