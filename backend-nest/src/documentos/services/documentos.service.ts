@@ -36,8 +36,11 @@ export class DocumentosService {
         filePath: docSalvo.path,
       },
       {
-        attempts: 3,
-        backoff: 2000,
+        attempts: 5,
+        backoff: {
+          type: 'exponential',
+          delay: 60000,
+        },
       },
     );
 
