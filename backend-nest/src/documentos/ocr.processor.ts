@@ -1,4 +1,9 @@
-import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
+import {
+  Processor,
+  WorkerHost,
+  OnWorkerEvent,
+  OnQueueEvent,
+} from '@nestjs/bullmq';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
@@ -77,20 +82,55 @@ export class OcrProcessor extends WorkerHost {
     }
   }
 
+  @OnQueueEvent('waiting')
+  onWaiting(job: Job<OcrJobData>) {
+    this.logger.log(
+      `[FILA] Novo job adicionado e aguardando: ID ${job.data.documentId}`,
+    );
+  }
+
   @OnWorkerEvent('active')
   onActive(job: Job<OcrJobData>) {
     this.logger.log(`[FILA] Iniciando OCR: Doc ${job.data.documentId}`);
   }
 
+  @OnWorkerEvent('progress')
+  onProgress(job: Job<OcrJobData>, progress: number) {
+    this.logger.log(
+      `[FILA] Progresso OCR Doc ${job.data.documentId}: ${progress}%`,
+    );
+  }
   @OnWorkerEvent('completed')
   onCompleted(job: Job<OcrJobData>) {
     this.logger.log(`[FILA] OCR Concluído: Doc ${job.data.documentId}`);
+  }
+
+  @OnWorkerEvent('drained')
+  onDrained() {
+    this.logger.log('[FILA] Todos os trabalhos de OCR foram processados.');
+  }
+
+  @OnWorkerEvent('error')
+  onError(error: Error) {
+    this.logger.error(`[FILA] Erro na fila de OCR: ${error.message}`);
   }
 
   @OnWorkerEvent('failed')
   onFailed(job: Job<OcrJobData>, error: Error) {
     this.logger.error(
       `[FILA] Erro no Doc ${job.data.documentId}: ${error.message}`,
+    );
+  }
+
+  @OnWorkerEvent('paused')
+  onPaused() {
+    this.logger.warn(`[FILA] O processamento da fila foi pausado.`);
+  }
+
+  @OnWorkerEvent('stalled')
+  onStalled(job: Job<OcrJobData>) {
+    this.logger.warn(
+      `[FILA] O Job ${job.data.documentId} ficou travado (stalled). Verifique a saúde do worker.`,
     );
   }
 }
