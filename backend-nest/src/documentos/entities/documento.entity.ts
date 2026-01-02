@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   BeforeInsert,
   OneToOne,
+  DeleteDateColumn,
 } from 'typeorm';
 import { AnaliseEntity } from './analise.entity';
 import { v7 as uuidv7 } from 'uuid';
@@ -45,6 +46,9 @@ export class DocumentosEntity {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
+  deletedAt: Date | null;
 
   @OneToOne(() => AnaliseEntity, (analise) => analise.documento, {
     cascade: true,
