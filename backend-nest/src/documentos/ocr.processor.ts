@@ -5,7 +5,7 @@ import {
   OnQueueEvent,
 } from '@nestjs/bullmq';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
 import { Job } from 'bullmq';
 import { lastValueFrom } from 'rxjs';
@@ -37,6 +37,7 @@ export class OcrProcessor extends WorkerHost {
     private readonly docRepository: Repository<DocumentosEntity>,
     @InjectRepository(AnaliseEntity)
     private readonly analiseRepository: Repository<AnaliseEntity>,
+    private readonly dataSource: DataSource,
   ) {
     super();
   }
@@ -45,14 +46,25 @@ export class OcrProcessor extends WorkerHost {
     const { documentId, filePath } = job.data;
 
     const resultadoOcr = await this.enviarParaAnalise(filePath);
-    await this.analiseRepository.update(
-      { documento: { id: documentId } },
-      {
-        statusProcessamento: 'concluído',
-        textoExtraido: resultadoOcr.texto,
-        metadados: resultadoOcr.metadados,
-      },
-    );
+
+    await this.dataSource.transaction(async (manager) => {
+      await manager.update(
+        AnaliseEntity,
+        { documento: { id: documentId } },
+        {
+          statusProcessamento: 'concluído',
+          textoExtraido: resultadoOcr.texto,
+        },
+      );
+
+      await manager.update(
+        DocumentosEntity,
+        { id: documentId },
+        {
+          isActive: true,
+        },
+      );
+    });
   }
 
   private async enviarParaAnalise(filePath: string): Promise<OcrResponse> {

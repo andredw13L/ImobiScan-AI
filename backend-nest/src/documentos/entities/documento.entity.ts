@@ -44,7 +44,7 @@ export class DocumentosEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @Column({ default: true })
+  @Column({ default: false })
   isActive: boolean;
 
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
