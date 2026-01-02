@@ -11,6 +11,12 @@ import {
 import { DocumentosEntity } from './documento.entity';
 import { v7 as uuidv7 } from 'uuid';
 
+export interface MetadadosAnalise {
+  valor_contrato: string | null;
+  cpf_encontrado: string | null;
+  data_contrato: string | null;
+}
+
 @Entity('analises')
 export class AnaliseEntity {
   @PrimaryColumn()
@@ -27,7 +33,7 @@ export class AnaliseEntity {
   textoExtraido: string;
 
   @Column({ type: 'json', nullable: true })
-  metadados: any;
+  metadados: MetadadosAnalise;
 
   @Column({ nullable: true })
   statusProcessamento: string;

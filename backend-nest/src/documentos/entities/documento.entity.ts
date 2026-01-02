@@ -31,6 +31,9 @@ export class DocumentosEntity {
   @Column()
   tipo: string;
 
+  @Column()
+  path: string;
+
   @Column({ type: 'int', nullable: true })
   tamanho: number;
 
