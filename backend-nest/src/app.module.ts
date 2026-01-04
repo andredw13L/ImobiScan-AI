@@ -32,7 +32,7 @@ import { BullModule } from '@nestjs/bullmq';
         autoLoadEntities: true,
         retryDelay: 30000,
         // synchronize shouldn't be used in production
-        synchronize: true,
+        synchronize: false,
       }),
     }),
   ],
