@@ -194,7 +194,7 @@ export function AnalisePage({ document, onBack }: AnalisePageProps) {
         </div>
 
         
-        <div className="rounded-xl border bg-card shadow-lg flex flex-col h-[600px] lg:h-[750px] overflow-hidden relative">
+        <div className="rounded-xl border bg-card shadow-lg flex flex-col h-150 lg:h-187.5 overflow-hidden relative">
           
           <div className="p-4 border-b bg-muted/30 flex justify-between items-center shrink-0 z-20">
             <div className="flex items-center gap-3">
