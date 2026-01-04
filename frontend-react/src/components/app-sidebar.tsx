@@ -13,7 +13,13 @@ import {
 } from "@/components/ui/sidebar";
 import { useDocuments, type Documento } from "../hooks/use-documents";
 
-export function AppSidebar() {
+
+interface AppSidebarProps {
+  onSelectDoc: (doc: Documento) => void;
+}
+
+
+export function AppSidebar({ onSelectDoc }: AppSidebarProps) {
   const { documents, isLoading } = useDocuments();
 
   return (
@@ -45,8 +51,9 @@ export function AppSidebar() {
                 documents?.map((doc: Documento) => (
                   <SidebarMenuItem key={doc.id}>
                     <SidebarMenuButton
-                      className="py-6 px-4"
+                      className="py-6 px-4 cursor-pointer transition-colors duration-200 hover:bg-accent/80 active:bg-accent"
                       tooltip={doc.nomeOriginal}
+                      onClick={() => onSelectDoc(doc)}
                     >
                       {doc.status === "pendente" ? (
                         <Loader2 className="size-4 animate-spin text-blue-500 shrink-0" />
