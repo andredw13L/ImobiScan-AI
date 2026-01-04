@@ -1,7 +1,6 @@
 import {
   Controller,
   Post,
-  UploadedFile,
   UseInterceptors,
   InternalServerErrorException,
   HttpException,
@@ -10,8 +9,9 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  UploadedFiles,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { DocumentosService } from '../services/documentos.service';
 import { diskStorage } from 'multer';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -27,13 +27,13 @@ export class DocumentosController {
 
   @Post('upload')
   @ApiOperation({
-    summary: 'Realiza upload de um documento para processamento',
+    summary: 'Realiza upload de múltiplos documentos para processamento',
   })
-  @ApiResponse({ status: 201, type: DocumentoResponseDto })
+  @ApiResponse({ status: 201, type: [DocumentoResponseDto] })
   @ApiResponse({ status: 400, description: 'Arquivo inválido' })
   @ApiResponse({ status: 500, description: 'Erro interno do servidor' })
   @UseInterceptors(
-    FileInterceptor('file', {
+    FilesInterceptor('files', 10, {
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, cb) => {
@@ -44,12 +44,12 @@ export class DocumentosController {
     }),
   )
   async realizarUpload(
-    @UploadedFile(new FileValidationPipe())
-    file: Express.Multer.File,
-  ): Promise<DocumentoResponseDto> {
+    @UploadedFiles(new FileValidationPipe())
+    files: Express.Multer.File[],
+  ): Promise<DocumentoResponseDto[]> {
     try {
-      const docEntity = await this.documentosService.criarComAnalise(file);
-      return DocumentoResponseDto.fromEntity(docEntity);
+      const docsEntities = await this.documentosService.criarComAnalise(files);
+      return docsEntities.map((doc) => DocumentoResponseDto.fromEntity(doc));
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -58,11 +58,11 @@ export class DocumentosController {
       const message =
         error instanceof Error
           ? error.message
-          : 'Erro desconhecido ao processar documento';
+          : 'Erro desconhecido ao processar documentos';
 
       throw new InternalServerErrorException({
         statusCode: 500,
-        message: message || 'Erro ao processar o documento.',
+        message: message || 'Erro ao processar os documentos.',
         error: 'INTERNAL_SERVER_ERROR',
       });
     }

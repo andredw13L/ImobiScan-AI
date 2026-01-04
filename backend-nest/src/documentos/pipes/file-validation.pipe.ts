@@ -28,14 +28,24 @@ export class FileValidationPipe implements PipeTransform {
     '.bmp',
   ];
 
-  transform(file: Express.Multer.File) {
-    if (!file) {
+  transform(value: Express.Multer.File | Express.Multer.File[]) {
+    if (!value || (Array.isArray(value) && value.length === 0)) {
       throw new BadRequestException({
         statusCode: 400,
-        message: 'O arquivo é obrigatório.',
+        message: 'Nenhum arquivo enviado.',
       });
     }
 
+    const files = Array.isArray(value) ? value : [value];
+
+    for (const file of files) {
+      this.validateSingleFile(file);
+    }
+
+    return value;
+  }
+
+  private validateSingleFile(file: Express.Multer.File) {
     const fileName = file.originalname.toLowerCase();
     const hasValidExtension = this.ALLOWED_EXTENSIONS.some((ext) =>
       fileName.endsWith(ext),
@@ -44,32 +54,30 @@ export class FileValidationPipe implements PipeTransform {
     if (!hasValidExtension) {
       throw new BadRequestException({
         statusCode: 400,
-        message: `Extensão inválida. Extensões aceitas: ${this.ALLOWED_EXTENSIONS.join(', ')}`,
+        message: `Arquivo ${file.originalname} possui extensão inválida.`,
       });
     }
 
     if (!this.ALLOWED_TYPES.includes(file.mimetype)) {
       throw new BadRequestException({
         statusCode: 400,
-        message: `Tipo de arquivo não permitido: ${file.mimetype}. Aceitos: ${this.ALLOWED_TYPES.join(', ')}`,
+        message: `Tipo não permitido para ${file.originalname}: ${file.mimetype}`,
       });
     }
 
     if (file.size > this.MAX_SIZE) {
       throw new BadRequestException({
         statusCode: 400,
-        message: `O arquivo excede o limite de 10MB. Tamanho atual: ${this.formatBytes(file.size)}`,
+        message: `O arquivo ${file.originalname} excede 10MB. (Atual: ${this.formatBytes(file.size)})`,
       });
     }
 
     if (file.size === 0) {
       throw new BadRequestException({
         statusCode: 400,
-        message: 'O arquivo está vazio.',
+        message: `O arquivo ${file.originalname} está vazio.`,
       });
     }
-
-    return file;
   }
 
   private formatBytes(bytes: number): string {
@@ -77,6 +85,6 @@ export class FileValidationPipe implements PipeTransform {
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+    return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
   }
 }

@@ -17,37 +17,35 @@ export class DocumentosService {
     private readonly httpService: HttpService,
   ) {}
 
-  async criarComAnalise(file: Express.Multer.File): Promise<DocumentosEntity> {
-    const novoDocumento = this.docRepository.create({
-      nomeOriginal: file.originalname,
-      nomeArquivo: file.filename,
-      tipo: file.mimetype,
-      path: file.path,
-      tamanho: file.size,
-      isActive: true,
-      analise: {
-        statusProcessamento: 'pendente',
-      },
+  async criarComAnalise(
+    files: Express.Multer.File[],
+  ): Promise<DocumentosEntity[]> {
+    const processamentoPromises = files.map(async (file) => {
+      const novoDocumento = this.docRepository.create({
+        nomeOriginal: file.originalname,
+        nomeArquivo: file.filename,
+        tipo: file.mimetype,
+        path: file.path,
+        tamanho: file.size,
+        isActive: true,
+        analise: { statusProcessamento: 'pendente' },
+      });
+
+      const docSalvo = await this.docRepository.save(novoDocumento);
+
+      await this.ocrQueue.add(
+        'process-ocr',
+        { documentId: docSalvo.id, filePath: docSalvo.path },
+        {
+          attempts: 5,
+          backoff: { type: 'exponential', delay: 60000 },
+        },
+      );
+
+      return docSalvo;
     });
 
-    const docSalvo = await this.docRepository.save(novoDocumento);
-
-    await this.ocrQueue.add(
-      'process-ocr',
-      {
-        documentId: docSalvo.id,
-        filePath: docSalvo.path,
-      },
-      {
-        attempts: 5,
-        backoff: {
-          type: 'exponential',
-          delay: 60000,
-        },
-      },
-    );
-
-    return docSalvo;
+    return Promise.all(processamentoPromises);
   }
 
   async perguntarParaIa(dados: {
