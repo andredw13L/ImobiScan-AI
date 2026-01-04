@@ -25,7 +25,6 @@ Este projeto é um MVP de um sistema de Gestão de Documentos com Inteligência 
 1.  **Clonar o Repositório:**
     ```bash
     git clone https://github.com/andredw13L/ImobiScan-AI.git
-    cd ImobiScan-AI
     ```
 
 2.  **Acessar a pasta do repositório**
