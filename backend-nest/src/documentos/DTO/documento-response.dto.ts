@@ -32,6 +32,14 @@ export class DocumentoResponseDto {
   })
   status: string;
 
+  @ApiProperty({
+    description: 'Texto extraído do documento ou null se ainda não processado',
+    nullable: true,
+    type: String,
+    example: 'Texto do contrato...',
+  })
+  textoExtraido: string | null;
+
   static fromEntity(entity: DocumentosEntity): DocumentoResponseDto {
     const dto = new DocumentoResponseDto();
     dto.id = entity.id;
@@ -39,6 +47,7 @@ export class DocumentoResponseDto {
     dto.tipo = entity.tipo;
     dto.createdAt = entity.createdAt;
     dto.status = entity.analise?.statusProcessamento || 'pendente';
+    dto.textoExtraido = entity.analise?.textoExtraido ?? null;
     return dto;
   }
 }

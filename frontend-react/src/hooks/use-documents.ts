@@ -4,9 +4,12 @@ import { useState, useEffect } from "react";
 export interface Documento {
   id: string;
   nomeOriginal: string;
+  nomeArquivo: string; 
   tipo: string;
+  path: string;
   status: "pendente" | "concluído";
   createdAt: string;
+  textoExtraido: string | null;
 }
 
 export function useDocuments() {
