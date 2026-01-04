@@ -26,12 +26,19 @@ export class DocumentoResponseDto {
   })
   createdAt: Date;
 
+  @ApiProperty({
+    description: 'Status atual do processamento (OCR)',
+    example: 'pendente',
+  })
+  status: string;
+
   static fromEntity(entity: DocumentosEntity): DocumentoResponseDto {
     const dto = new DocumentoResponseDto();
     dto.id = entity.id;
     dto.nomeOriginal = entity.nomeOriginal;
     dto.tipo = entity.tipo;
     dto.createdAt = entity.createdAt;
+    dto.status = entity.analise?.statusProcessamento || 'pendente';
     return dto;
   }
 }
