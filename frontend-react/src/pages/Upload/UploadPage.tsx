@@ -56,7 +56,7 @@ export function DocumentUploadPage() {
   }, []);
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4">
+    <div className="w-full max-w-4xl  mx-auto p-4 cursor-pointer ">
       <FileUpload
         value={files}
         onValueChange={setFiles}
@@ -72,7 +72,7 @@ export function DocumentUploadPage() {
               <Upload className="size-6 text-muted-foreground" />
             </div>
             <div className="space-y-1">
-              <p className="font-semibold text-foreground">ImobiAI - Upload</p>
+              <p className="font-semibold text-foreground">ImobiScan AI - Upload</p>
               <p className="text-muted-foreground text-xs leading-relaxed">
                 Arraste seus contratos aqui <br />
                 (PDF, Imagens ou Word até 10MB)
@@ -116,7 +116,7 @@ export function DocumentUploadPage() {
 
         {files.length > 0 && (
           <Button
-            className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white"
+            className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
             onClick={handleUpload}
             disabled={isUploading}
           >
