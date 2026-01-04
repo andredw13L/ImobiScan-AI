@@ -35,6 +35,4 @@ Este projeto é um MVP de um sistema de Gestão de Documentos com Inteligência 
     ```
     *Este comando irá baixar as imagens, configurar o banco de dados MySQL, instalar as dependências (incluindo o motor do Tesseract), construir as imagens e iniciar os serviços.*
 
-3.  **Acessar a Aplicação:**
-    * **Frontend:** `http://localhost:4200`
-    * **API:** `http://localhost:3000`
+3.  **Acessar a Aplicação:** `http://localhost:4200`
