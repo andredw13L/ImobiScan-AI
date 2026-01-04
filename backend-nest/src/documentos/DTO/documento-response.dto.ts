@@ -40,11 +40,18 @@ export class DocumentoResponseDto {
   })
   textoExtraido: string | null;
 
+  @ApiProperty({
+    description: 'Caminho do arquivo no servidor',
+    example: '/uploads/contrato.pdf',
+  })
+  path: string;
+
   static fromEntity(entity: DocumentosEntity): DocumentoResponseDto {
     const dto = new DocumentoResponseDto();
     dto.id = entity.id;
     dto.nomeOriginal = entity.nomeOriginal;
     dto.tipo = entity.tipo;
+    dto.path = entity.path;
     dto.createdAt = entity.createdAt;
     dto.status = entity.analise?.statusProcessamento || 'pendente';
     dto.textoExtraido = entity.analise?.textoExtraido ?? null;
