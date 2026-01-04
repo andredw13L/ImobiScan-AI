@@ -28,10 +28,15 @@ Este projeto é um MVP de um sistema de Gestão de Documentos com Inteligência 
     cd ImobiScan-AI
     ```
 
-2.  **Executar o Projeto:**
+2.  **Acessar a pasta do repositório**
+    ```bash
+    cd ImobiScan-AI
+    ```
+
+3.  **Executar o Projeto:**
     Na raiz do projeto, execute o comando:
     ```bash
     docker-compose up
     ```
 
-3.  **Acessar a Aplicação:** `http://localhost:4200`
+4.  **Acessar a Aplicação:** `http://localhost:4200`
