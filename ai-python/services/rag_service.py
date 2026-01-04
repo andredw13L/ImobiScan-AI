@@ -1,3 +1,14 @@
+import os
+from fastapi import HTTPException 
+from langchain_ollama import ChatOllama
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.runnables import RunnableLambda
+
 class ServicoRAG:
     def __init__(self):
         self.modelo_busca = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
@@ -38,6 +49,7 @@ Resposta Técnica:"""
             vectorstore = FAISS.from_texts(documentos_divididos, self.modelo_busca)
             
             # Ajuste o valor de 'k' conforme necessário para retornar mais contextos.
+            retriever = vectorstore.as_retriever(search_kwargs={"k": 1})
 
             def formatDocs(docs):
                 return "\n\n".join(f"[Trecho]: {doc.page_content}" for doc in docs)
