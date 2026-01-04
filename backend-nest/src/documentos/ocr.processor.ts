@@ -79,7 +79,7 @@ export class OcrProcessor extends WorkerHost {
     try {
       const response = await lastValueFrom(
         this.httpService.post<OcrResponse>(
-          'http://ocr-service:8000/extract-text',
+          'http://ai-python:8000/extrair-texto',
           formData,
           { headers: { ...formData.getHeaders() } },
         ),
