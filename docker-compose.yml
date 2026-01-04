@@ -36,7 +36,7 @@ services:
 
   ai-service:
     build:
-      context: ./backend-python
+      context: ./ai-python
       dockerfile: docker/Dockerfile
     container_name: ai-python
     environment:
@@ -47,7 +47,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend-python:/app
+      - ./ai-python:/app
 
 
   redis:
