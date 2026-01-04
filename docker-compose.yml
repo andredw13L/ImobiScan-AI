@@ -33,6 +33,16 @@ services:
         - ai-service
         - redis
 
+  frontend:
+    build:
+      context: ./frontend-react
+      dockerfile: ./docker/Dockerfile
+    container_name: react-app
+    ports:
+      - "4200:80"
+    depends_on:
+      - nest
+
 
   ai-service:
     build:
