@@ -21,8 +21,11 @@ export class DocumentosService {
     files: Express.Multer.File[],
   ): Promise<DocumentosEntity[]> {
     const processamentoPromises = files.map(async (file) => {
+      const nomeFormatado = Buffer.from(file.originalname, 'latin1').toString(
+        'utf8',
+      );
       const novoDocumento = this.docRepository.create({
-        nomeOriginal: file.originalname,
+        nomeOriginal: nomeFormatado,
         nomeArquivo: file.filename,
         tipo: file.mimetype,
         path: file.path,
@@ -89,5 +92,12 @@ export class DocumentosService {
       console.error(`Erro ao consultar o serviço de IA: ${errorMessage}`);
       throw new HttpException('Falha ao obter resposta do serviço de IA.', 500);
     }
+  }
+
+  async listarTodos(): Promise<DocumentosEntity[]> {
+    return await this.docRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['analise'],
+    });
   }
 }

@@ -10,6 +10,7 @@ import {
   HttpStatus,
   ParseUUIDPipe,
   UploadedFiles,
+  Get,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { DocumentosService } from '../services/documentos.service';
@@ -65,6 +66,21 @@ export class DocumentosController {
         message: message || 'Erro ao processar os documentos.',
         error: 'INTERNAL_SERVER_ERROR',
       });
+    }
+  }
+
+  @Get()
+  @ApiOperation({
+    summary: 'Listar os documentos e seuys status de processamento',
+  })
+  async listarTodos(): Promise<DocumentoResponseDto[]> {
+    try {
+      const docs = await this.documentosService.listarTodos();
+      return docs.map((doc) => DocumentoResponseDto.fromEntity(doc));
+    } catch {
+      throw new InternalServerErrorException(
+        'Não foi possível carregar a lista de documentos.',
+      );
     }
   }
 
