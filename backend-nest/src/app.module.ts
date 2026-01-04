@@ -30,9 +30,8 @@ import { BullModule } from '@nestjs/bullmq';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
-        retryDelay: 30000,
         // synchronize shouldn't be used in production
-        synchronize: false,
+        synchronize: true,
       }),
     }),
   ],
