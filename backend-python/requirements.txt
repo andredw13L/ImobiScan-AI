@@ -9,3 +9,13 @@ opencv-python-headless
 numpy
 httpx
 typing-extensions
+langchain
+langchain-community
+langchain-huggingface
+langchain-ollama
+ollama
+faiss-cpu
+mysql-connector-python
+sentence-transformers
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch

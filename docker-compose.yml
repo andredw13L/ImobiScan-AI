@@ -18,6 +18,11 @@ services:
         context: ./backend-nest
         dockerfile: ./docker/Dockerfile
       container_name: nest-api
+      environment:
+        - DB_HOST=db
+        - DB_USER=root
+        - DB_PASSWORD=imobiscan_secure_password
+        - DB_NAME=imobiscan
       ports:
         - "3000:3000"
       volumes:
@@ -25,15 +30,20 @@ services:
         - nest_node_modules:/usr/src/app/node_modules
       depends_on:
         - db
-        - ocr-service
+        - ai-service
         - redis
 
 
-  ocr-service:
+  ai-service:
     build:
       context: ./backend-python
       dockerfile: docker/Dockerfile
-    container_name: ocr-python
+    container_name: ai-python
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=imobiscan_secure_password
+      - DB_NAME=imobiscan
     ports:
       - "8000:8000"
     volumes:
@@ -49,9 +59,20 @@ services:
       - redis_data:/data
     command: ["redis-server", "--appendonly", "yes"]
 
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-service
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    volumes:
+      - ollama_data:/var/lib/ollama
+    entrypoint: /bin/sh -c "ollama serve & sleep 10 && ollama pull qwen2.5:1.5b && wait"
+
 
 volumes:
   mysql_data:
   nest_node_modules:
   redis_data:
-
+  ollama_data:
